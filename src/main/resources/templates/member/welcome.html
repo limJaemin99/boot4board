@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>welcome</title>
+</head>
+<body>
+<h1>Welcome!</h1>
+<button onclick="location.href='${pageContext.request.contextPath}'">home</button>
+<button onclick="location.href='/login'">login</button>
+<script type="text/javascript">
+    if('${message}'.length !=0) alert('${message}');
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <link rel="stylesheet" th:href="@{/css/}"></link>
+</head>
+<body>
+<header>
+    <h3>메인 Main</h3>
+    <hr>
+</header>
+<nav>
+    <!-- "user" 라는 이름의 애트리뷰트 가져오기 -->
+    <h4 th:if="${user != null }" th:text="${user.name} 님 환영합니다."></h4>
+    <p th:if="${user != null }"><a th:href="@{logout}">로그아웃</a></p>
+
+    <p th:if="${user == null }"><a th:href="@{member/login}">로그인</a></p>
+    <p th:if="${user == null }"><a th:href="@{member/join}">회원가입</a></p>
+
+    <p><a th:href="@{community/list}">커뮤니티</a></p>
+</nav>
+
+<!------------------------------------>
+
+<hr>
+<h3>### 타임리프 샘플 ###</h3>
+<a href="sample/hello">hello</a>
+</body>
+</html>

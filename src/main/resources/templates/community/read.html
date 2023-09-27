@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/read.css}">
+</head>
+<body>
+<main id="list">
+    <h3>북챗 :: 커뮤니티</h3>
+    <p>오늘 무슨 책을 읽으셨나요? </p>
+    <hr style="color:white;">
+    <div style="width:80%;margin:auto;max-width:760px;">
+        <ul id="table">
+            <li>
+                <ul class="row">
+                    <li>제목</li>
+                    <li th:text="${vo.title}"></li>
+                    <li>조회수</li>
+                    <li th:text="${vo.readCount}"></li>
+                </ul>
+            </li>
+            <li>
+                <ul class="row">
+                    <li>내용</li>
+                    <li>
+                        <pre th:text="${vo.content}"></pre>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <div style="text-align: center;margin-bottom: 10px;">
+            <form action="" method="post">
+                <input type="hidden" name="idx" th:text="${vo.idx}">
+                <input type="hidden" name="page" th:text="${page}">
+                <a class="button" th:onclick="|javascript:execute(1)|">수정</a>
+                <a class="button" th:onclick="|javascript:formexecute(2)|">삭제</a>
+                <a class="button" th:href="@{list(page=${page})}">목록</a>
+            </form>
+        </div>
+        <script type="text/javascript">
+            var message = document.getElementById('message').value
+            if(message.length > 0) alert(message);
+            //수정 , 삭제를 [GET] 요청으로 처리하는 방식
+            function execute(f){
+                console.log('누름')
+                let url
+                let message
+                if(f===1){			//아래 url 변수와 같이 조건삼항연산자로 변경가능
+                    message='글 수정하시겠습니까?'
+                }else if(f===2){
+                    message='글 삭제하시겠습니까?'
+                }
+                const yn = confirm(message)
+                if(yn) {
+                    let idx = ${vo.idx} /* ★★★ 변수에 담아서 사용해야함 09.27(수) ★★★ */
+                        page = ${page}
+                    //설명 작성 :
+                    url = (f===1)? 'update?idx='+idx :(f===2)? 'delete?idx='+idx:'#';
+                    location.href=url+'&page='+page;  /* 현재페이지 번호 전달 - 순서3) */
+                }else{
+                    alert('취소합니다.')
+                }
+            }
+            /*  POST 요청을 위해 변경한 함수 : 가급적 url에 많은 정보를 노출하지 않으려면 post 방식으로 합니다. */
+            function formexecute(f){
+                let url
+                let message
+                if(f===1){			//아래 url 변수와 같이 조건삼항연산자로 변경가능
+                    message='글 수정하시겠습니까?'
+                }else if(f===2){
+                    message='글 삭제하시겠습니까?'
+                }
+                const yn = confirm(message)
+                if(yn) {
+                    //설명 작성 :
+                    url = (f===1)? 'update' :(f===2)? 'delete':'#';
+                    document.forms[0].action=url
+                    document.forms[0].submit()
+                }else{
+                    alert('취소합니다.')
+                }
+            }
+        </script>
+    </div>
+</main>
+</body>
+</html>
