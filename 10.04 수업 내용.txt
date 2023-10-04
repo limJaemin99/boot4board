@@ -1,0 +1,46 @@
+1. 타임리프 레이아웃 (header , main , footer) 설정방법
+    - 교재 방법 : 외부 라이브러리 사용
+    - gradle 에서는 build.gradle 에 의존성 추가
+
+    // https://mvnrepository.com/artifact/nz.net.ultraq.thymeleaf/thymeleaf-layout-dialect
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.2.0'
+
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+
+2. 게시판
+    - 페이징
+    - 검색
+
+    1) mapper 에 검색 동적태그를 추가한다.
+        where title like '%' || #{keyword} || '%' OR writer like '%' || #{keyword} || '%' OR content like '%' || #{keyword} || '%'
+            ▶ types 가 {"t" , "c" , "w"}
+        where title like '%' || #{keyword} || '%' OR writer like '%' || #{keyword} || '%'
+            ▶ types 가 {"t" , "w"}
+        where title like '%' || #{keyword} || '%'
+            ▶ types 가 {"t"}
+
+    2) <include refid="search"/> 는 검색 조건에 따라 만들어진 동적 쿼리문을
+        페이지 작업에 필요한 글의 갯수 : count , 글 목록 : pagelist 에 추가하여 where 조건으로 적용된 결과를 구한다.
+
+    3) 검색을 하기 위해 sql 에 필요한 파라미터는?
+        - start,end (페이지)
+        - types,keyword (검색)
+        - from,to (날짜)
+       이 중 start,end 는 요청된 페이지 번호 page 로 계산한다.
+    ☞ 이 필드들을 전부 포함하는 DTO 클래스를 만든다. (PageRequestDTO)
+        ▶ CommunityMapper 를 수정하기 (count 와 pagelist 수정하기)
+        ▶ CommunityService 를 수정하기
+        ▶ CommunityService 의 pagelist 메소드를 테스트하기
+
+    4) 페이지 목록 만들기 ▶ PageResponseDTO 클래스 작성하기
+
+    5) list.html ▶ 검색과 페이징을 위한 화면
+
+    6) CommunityController 의 list 메소드 수정하기 ▶ CommunityService 의 pagelist 메소드 호출해서 결과를 list.html 로 출력하기
+
+    7) 검색은 제외하고 페이지 이동에 따라 글 목록 나오도록 해보기
+
+━━━━━━━━━━━━━━━━━━━━━ [숙제] ━━━━━━━━━━━━━━━━━━━━━
+- 인텔리제이에서 IPv6 를 IPv4 로 설정하는 방법 찾아보기
+- pageSize = 3 일때 문제점 찾아보기 (해결방법)

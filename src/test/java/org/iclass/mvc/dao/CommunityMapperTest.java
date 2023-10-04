@@ -2,6 +2,7 @@ package org.iclass.mvc.dao;
 
 import lombok.extern.slf4j.Slf4j;
 import org.iclass.mvc.dto.Community;
+import org.iclass.mvc.dto.PageRequestDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ class CommunityMapperTest {
     @DisplayName("저장된 글의 개수는 0이 아닙니다.")
     @Test
     void count() {
-        int count = dao.count();
+        int count = 0; //dao.count();   ▶ 10/04 count() 수정 후 테스트를 위해 0으로 수정함
         log.info("커뮤니티 count : {}",count);
         Assertions.assertNotEquals(0,count);
     }

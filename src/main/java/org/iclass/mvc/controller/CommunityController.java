@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.iclass.mvc.dto.Community;
 import org.iclass.mvc.dto.CommunityComments;
+import org.iclass.mvc.dto.PageRequestDTO;
+import org.iclass.mvc.dto.PageResponseDTO;
 import org.iclass.mvc.service.CommunityService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,11 +22,21 @@ public class CommunityController {
 
     private final CommunityService service;
 
+//    @GetMapping("/list")
+//    public void pagelist(@RequestParam(defaultValue = "1") int page , Model model){
+//        model.addAttribute("list",service.pagelist(page).get("list"));
+//        model.addAttribute("paging",service.pagelist(page).get("paging"));
+//        model.addAttribute("today", LocalDate.now());
+//    }
+
     @GetMapping("/list")
-    public void list(@RequestParam(defaultValue = "1") int page , Model model){
-        model.addAttribute("list",service.pagelist(page).get("list"));
-        model.addAttribute("paging",service.pagelist(page).get("paging"));
-        model.addAttribute("today", LocalDate.now());
+    public void pagelist(PageRequestDTO pageRequestDTO , Model model){
+        PageResponseDTO pageResponseDTO = service.listWithSearch(pageRequestDTO);
+        //list.html 에 전달할 model 관련 코드 작성하기 + list.html 도 완성하기 + 레이아웃도 적용하기 (10/04)
+        model.addAttribute("list",service.pagelist(pageRequestDTO));
+        model.addAttribute("paging",pageResponseDTO);
+        model.addAttribute("page",pageRequestDTO.getPage());
+        model.addAttribute("today",LocalDate.now());
     }
 
     @GetMapping("/read")
