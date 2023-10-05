@@ -73,4 +73,21 @@ public class MemberController {
 
         return "redirect:/";
     }
+
+    @GetMapping("/update")
+    public void updateView(){
+
+    }
+
+    @PostMapping("/update")
+    public String update(BookUser bookUser){
+        String url = "/";
+        int result = service.update(bookUser);
+
+        if(result == 0){    //실패
+            url = "update";
+        }
+
+        return "redirect:"+url;
+    }
 }

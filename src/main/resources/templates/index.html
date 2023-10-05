@@ -1,24 +1,29 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{/layout/basic.html}">
 <head>
     <meta charset="UTF-8">
     <title>index</title>
-    <link rel="stylesheet" th:href="@{/css/}"></link>
 </head>
 <body>
 <header>
     <h3>메인 Main</h3>
     <hr>
 </header>
+<div layout:fragment="content">
 <nav>
     <!-- "user" 라는 이름의 애트리뷰트 가져오기 -->
-    <h4 th:if="${user != null }" th:text="${user.name} 님 환영합니다."></h4>
-    <p th:if="${user != null }"><a th:href="@{logout}">로그아웃</a></p>
-
-    <p th:if="${user == null }"><a th:href="@{member/login}">로그인</a></p>
-    <p th:if="${user == null }"><a th:href="@{member/join}">회원가입</a></p>
-
-    <p><a th:href="@{community/list}">커뮤니티</a></p>
+    <div th:if="${session.user != null}">
+        <h4 th:text="${session.user.name}+'님 환영합니다.'"></h4>
+        <p><a th:href="@{/member/logout}">로그아웃</a></p>
+        <p><a th:href="@{/member/update}">정보 수정</a></p>
+    </div>
+    <div th:if="${session.user == null}">
+        <p><a th:href="@{/member/login}">로그인</a></p>
+        <p><a th:href="@{/member/join}">회원가입</a></p>
+    </div>
+    <p><a th:href="@{/community/list}">커뮤니티</a></p>
 </nav>
 
 <!------------------------------------>
@@ -29,5 +34,6 @@
 <a href="sample/spring">Go Spring 1</a><br>
 <a href="sample/spring?name=momo&age=23">Go Spring 2</a><br>
 <a href="sample/spring?title=하이&writer=nana">Go Spring 3</a>
+</div>
 </body>
 </html>

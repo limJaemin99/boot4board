@@ -39,10 +39,16 @@ public class CommunityController {
         model.addAttribute("today",LocalDate.now());
     }
 
+//    @GetMapping("/read")
+//    public void read(long idx , @ModelAttribute("page") int page , Model model){
+//        model.addAttribute("vo",service.read(idx));
+//        model.addAttribute("cmtlist",service.commentsList(idx));
+//    }
+
     @GetMapping("/read")
-    public void read(long idx , @ModelAttribute("page") int page , Model model){
-        model.addAttribute("vo",service.read(idx));
-        model.addAttribute("cmtlist",service.commentsList(idx));
+    public void read(PageRequestDTO pageRequestDTO , long idx , Model model){
+        Community community = service.read(idx);
+        model.addAttribute("dto",community);
     }
 
     @GetMapping("/write")

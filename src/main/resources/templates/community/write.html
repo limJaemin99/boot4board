@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{/layout/basic.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <title>우리 북카페</title>
+</head>
+<body>
+<div layout:fragment="content">
+<div class="row mt-3">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h3>게시글 작성</h3>
+            </div>
+            <div class="card-body">
+                <form name="frm1" method="post" action="write" onsubmit="return isValid()">
+                    <input type="hidden" name="ip" th:value="${remoteAddr}">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text col-2">제목</span>
+                        <input class="form-control" type="text" name="title" size="50">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text col-2">작성자</span>
+                        <span th:if="${session.user != null}">
+                            <input class="form-control" type="text" name="writer" size="50" th:value="${session.user.id}" readonly>
+                        </span>
+                        <span th:if="${session.user == null}">
+                            <input class="form-control" type="text" name="writer" size="50" th:value="비회원" readonly>
+                        </span>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text col-2">내용</span>
+                        <textarea class="form-control" rows="30" cols="80" name="content"></textarea>
+                    </div>
+                    <div class="my-4">
+                        <div class="float-end">
+                            <a class="text-decoration-none">
+                                <button type="submit" class="btn btn-secondary">저장</button>
+                            </a>
+                            <a class="text-decoration-none">
+                                <button type="reset" class="btn btn-secondary">다시쓰기</button>
+                            </a>
+                            <a class="text-decoration-none">
+                                <button type="button" class="btn btn-secondary" onclick="location.href='list'">목록</button>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<main id="write">
+
+
+</main>
+</div>
+<script layout:fragment="script" th:inline="javascript">
+    //태그의 required 속성을 사용해서 필수 입력을 체크할수 있지만 필수 입력 외의 다른 유효성검사
+    //예를 들면, 최소 길이 또는 정규식 패턴 등의 유효성 검사를 위해 함수를 사용합니다.
+    function isValid() {
+        let yn
+        let result = true //유효성 검사 결과 저장
+        let session = [[${session.user}]]
+        const content = document.forms[0].content //input 요소 지정
+        const title = document.forms[0].title //input 요소 지정
+
+        if (title.value == '') {
+            alert('글 제목 작성은 필수 입니다.')
+            result = false
+            title.focus()
+        } else if (content.value == '') {
+            alert('글 내용 작성은 필수 입니다.')
+            result = false
+            content.focus()
+        }
+
+        if(session == null) {
+            yn = confirm('비회원으로 작성한 글은 수정/삭제가 불가능합니다. 저장하시겠습니까?')
+            if(yn) {
+                document.forms[0].title.value = '[비회원]'+title.value
+                return result;
+            }
+            else return false;
+        }
+
+        return result;
+    }
+    //유효성 검사를 위해서 저장 버튼 타입을 submit 으로 두는 방법입니다.
+    //form 태그에 onsubmit="return isValid()"
+    // => isValid 함수 실행한 리턴이 true 일때만 submit 합니다.
+</script>
+</body>
+</html>

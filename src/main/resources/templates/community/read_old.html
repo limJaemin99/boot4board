@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <title>우리 북카페</title>
+    <link rel="stylesheet" th:href="@{/css/read.css}">
+</head>
+<body>
+<main id="read">
+    <h3>북챗 :: 커뮤니티</h3>
+    <p>오늘 무슨 책을 읽으셨나요? </p>
+    <hr style="color:white;">
+    <div style="width: 80%; margin: auto;max-width: 760px;">
+        <ul id="table">
+            <li>
+                <ul class="row">
+                    <li>제목</li>
+                    <li th:text="${vo.title}"></li>
+                    <li>조회수</li>
+                    <li th:text="${vo.readCount }"></li>
+                </ul>
+            </li>
+            <li>
+                <ul class="row">
+                    <li>작성자</li>
+                    <li th:text="${vo.writer }">
+                        <span style="font-size: 70%; padding-left: 30px;">([[${vo.ip]])</span></li>
+                    <li>작성날짜</li>
+                    <li><span th:text="${#dates.format(vo.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span></li>
+                </ul>
+            </li>
+            <li id="content">
+                <ul>
+                    <li>내용</li>
+                    <li>
+                        <pre><span th:text="${vo.content }"></span></pre>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <div style="text-align: center;margin-bottom: 10px;">
+            <form action="" method="post">
+                <input type="hidden" name="idx" th:value="${vo.idx}">
+                <input type="hidden" name="page" th:value="${page}">
+                <a class="button" th:href="'javascript:formexecute(1, ' + ${vo.idx} + ', ' + ${page}+')'">수정</a>
+                <a class="button" th:href="'javascript:formexecute(2, ' + ${vo.idx} + ', ' + ${page}+')'">삭제</a>
+                <a class="button" th:href="@{'list'(page=${page})}">목록</a>
+            </form>
+        </div>
+        <script type="text/javascript">
+            /*if ('${message}'.length !== 0) alert('${message}');*/
+
+            function formexecute(f, idx, page) {
+                let url;
+                let message;
+                if (f === 1) {
+                    message = '글 수정하시겠습니까?';
+                    url = 'update?idx=' + idx + '&page=' + page;
+                } else if (f === 2) {
+                    message = '글 삭제하시겠습니까?';
+                    url = 'delete?idx=' + idx + '&page=' + page;
+                }
+                const yn = confirm(message);
+                if (yn) {
+                    document.forms[0].action = url;
+                    document.forms[0].submit();
+                } else {
+                    alert('취소합니다.');
+                }
+            }
+        </script>
+
+
+        <hr>
+        <form action="comments" method="post">
+            <input type="hidden" name="mref" th:value="${vo.idx}">
+            <input type="hidden" name="idx" value="0">
+            <input type="hidden" name="ip" th:value="${remoteAddr}">
+            <input type="hidden" name="f" value="0">
+            <input type="hidden" name="page" th:value="${page}">
+            <ul>
+                <li>
+                    <ul class="row">
+                        <li>작성자</li>
+                        <li th:if="${session.user != null}">
+                            <input name="writer" class="input" th:value="${session.user.id}" readonly="readonly">
+                        </li>
+                        <li th:if="${session.user == null}">
+                            <input name="writer" class="input" placeholder="로그인 후 작성 가능합니다." readonly="readonly">
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <ul style="display: flex;">
+                        <li>
+                    <textarea rows="5" cols="80" name="content"
+                              style="resize:none;margin-right:20px;"
+                              placeholder="로그인 후에 댓글을 작성하세요." class="input"></textarea>
+                        </li>
+                        <li style="align-self: center;margin-bottom: 20px;" th:if="${session.user != null}">
+                            <button type="button" onclick="executeCmt(1,0)">저장</button>
+                        </li>
+                        <li style="align-self: center;margin-bottom: 20px;" th:if="${session.user == null}">
+                            <button type="button" onclick="location.href='../member/login'">로그인</button>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <span>댓글</span>
+                    <span>[<span th:text="${vo.commentCount}"></span>]</span>
+                    <hr>
+                </li>
+                <th:block th:each="cmt : ${cmtlist}">
+                    <li>
+                        <ul class="crow">
+                            <li><span th:text="${cmt.writer}"></span></li>
+                            <li><span th:text="${cmt.ip}"></span></li>
+                            <li><span th:text="${cmt.createdAt}"></span></li>
+                            <li th:if="${session.user != null and cmt.writer != null and session.user.id == cmt.writer}">
+                                <a th:href="'javascript:executeCmt(2,' + ${cmt.idx} + ')'" class="delete-link">삭제</a>
+                            </li>
+                            <li th:if="${session.user == null or cmt.writer == null or session.user.id != cmt.writer}">
+                            </li>
+                            <!--<button type="submit" th:if="${session.user != null}">삭제</button>-->
+                        </ul>
+                    </li>
+                    <li>
+                        <pre class="cmtcontent" th:text="${cmt.content}"></pre>
+                    </li>
+                </th:block>
+            </ul>
+        </form>
+        </div>
+</main>
+<script type="text/javascript">
+    function executeCmt(fval,cidx) {	/* 첫번째는 등록 또는 삭제 기능, 두번째는 삭제할 댓글 idx */
+        const frm = document.forms[1]
+        if(fval===1){		//댓글 등록.  '1'==1 (참)  '1'===1 (거짓. 타입체크)
+            if(frm.content.value==''){
+                alert('글 내용은 필수 입력입니다.')
+                frm.content.focus()
+                return
+            }else {
+                frm.f.value = fval
+                frm.submit()		//댓글 저장
+            }
+        }else if(fval===2){
+            const yn = confirm('댓글 삭제 하시겠습니까?')
+            if(yn) {
+                frm.f.value = fval
+                frm.idx.value = cidx
+                frm.submit()
+            }
+
+        }
+    }
+
+
+
+
+
+</script>
+</body>
+</html>

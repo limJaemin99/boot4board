@@ -28,4 +28,8 @@ public class BookUserService {
 	public int join(BookUser dto) {
 		return dao.join(dto);
 	}
+
+	//정보 수정
+	public int update(BookUser dto) { return dao.update(dto); }
+
 }

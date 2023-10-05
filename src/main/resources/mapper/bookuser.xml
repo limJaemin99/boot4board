@@ -16,6 +16,14 @@
  			bookuser
  		VALUES(#{id} , #{name} , #{email} , 0 , sysdate , #{password})
  	</insert>
- 	
+
+	<update id="update" parameterType="BookUser">
+		UPDATE bookuser
+		SET
+		    email=#{email} , password=#{password}
+		WHERE
+		    id=#{id}
+	</update>
+
  </mapper>
  

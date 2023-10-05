@@ -38,7 +38,7 @@ public class CommunityService {
 		pageRequestDTO.setDatas();
 		List<Community> list = dao.pagelist(pageRequestDTO);
 
-		PageResponseDTO pageResponseDTO = PageResponseDTO.of(pageRequestDTO,dao.count(pageRequestDTO),10);
+		PageResponseDTO pageResponseDTO = PageResponseDTO.of(pageRequestDTO,dao.count(pageRequestDTO),5);
 		pageResponseDTO.setList(list);
 
 		return pageResponseDTO;

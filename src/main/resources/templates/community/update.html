@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{layout/basic.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <title>우리 북카페</title>
+</head>
+<body>
+<main id="write">
+<div layout:fragment="content">
+<div class="row mt-3">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h3>게시글 수정</h3>
+            </div>
+            <div class="card-body">
+                <form name="frm1" action="update" method="post">
+                    <input type="hidden" name="idx" th:value="${vo.idx }">
+                    <input type="hidden" name="page" th:value="${page}">
+                    <input type="hidden" name="ip" th:value="${remoteAddr }">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text col-2">제목</span>
+                        <span th:if="${vo.title.contains('[수정]')}">
+                            <input class="form-control" name="title" size="50" th:value="${vo.title}" readonly/>
+                        </span>
+                        <span th:unless="${vo.title.contains('[수정]')}">
+                            <input class="form-control" name="title" size="50" th:value="'[수정]'+${vo.title}" readonly/>
+                        </span>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text col-2">작성자</span>
+                        <input class="form-control" name="writer" size="50" th:value="${vo.writer}" readonly>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text col-2">작성 날짜</span>
+                        <input class="form-control" name="writer" size="50" th:value="${vo.createdAt}" readonly>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text col-2">내용</span>
+                        <textarea class="form-control" rows="30" cols="80" name="content" th:text="${vo.content }" required style="resize: none;"></textarea>
+                    </div>
+                    <div class="my-4">
+                        <div class="float-end">
+                            <a class="text-decoration-none">
+                                <button type="button" th:onclick="isValid()" class="btn btn-secondary">저장</button>
+                            </a>
+                            <a class="text-decoration-none">
+                                <button type="reset" class="btn btn-secondary">다시쓰기</button>
+                            </a>
+                            <a th:href="@{/list(page=${page})}" class="text-decoration-none">
+                                <button class="btn btn-secondary">뒤로가기</button>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</main>
+<script layout:fragment="script" th:inline="javascript">
+    function isValid(){
+        let result = true			//유효성 검사 결과 저장
+        const content = document.forms[0].content		//input 요소 지정
+        if(content.value == '') {
+            alert('글 내용 작성은 필수 입니다.')
+            result = false
+            content.focus()
+        }
+
+        if(result) {
+            document.forms[0].submit()
+        }
+    }
+    //유효성 검사를 위해서 저장 버튼 타입을 submit 으로 두는 방법도 있습니다.
+    //그럴 때는 form 태그에 onsubmit="return isValid()"    => isValid 함수 실행한 리턴이 true 일때만 submit 합니다.
+</script>
+</body>
+</html>

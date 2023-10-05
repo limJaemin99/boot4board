@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <title>우리 북카페</title>
+    <link rel="stylesheet" th:href="@{/css/list.css}">
+</head>
+<body>
+<main id="list">
+    <h3>북챗 :: 커뮤니티</h3>
+    <p>오늘 무슨 책을 읽으셨나요? </p>
+    <hr style="color:white;">
+    <div style="margin:auto;width:900px;">
+        <ul id="main">
+            <li>
+                <ul class="row">
+                    <li>번호</li>
+                    <li>제목</li>
+                    <li>작성자</li>
+                    <li>조회수</li>
+                    <li>작성일</li>
+                </ul>
+            </li>
+            <th:block th:each="vo : ${list}">
+                <li>
+                    <ul class="row">
+                        <li th:text="${vo.r}"></li>
+                        <li>
+                            <a th:href="@{read(idx=${vo.idx},page=${paging.currentPage})}" class="title" th:text="${vo.title}"></a>
+                            <span style="color:orange;font-size: 80%;">(<span th:text="${vo.commentCount}"></span>)</span>
+                        </li>
+                        <li th:text="${vo.writer}"></li>
+                        <li th:text="${vo.readCount}"></li>
+                        <li>
+                            <span th:if="${#dates.format(vo.createdAt, 'yyyy-MM-dd') == #dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
+                                  th:text="${#dates.format(vo.createdAt, 'HH:mm')}"></span>
+                            <span th:if="${#dates.format(vo.createdAt, 'yyyy-MM-dd') != #dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
+                                  th:text="${#dates.format(vo.createdAt, 'yyyy-MM-dd')}"></span>
+                        </li>
+                    </ul>
+                </li>
+            </th:block>
+        </ul>
+        <div style="float:right;margin:40px;">
+            <th:block th:if="${session.user != null}">
+                <!--<a th:href="@{'write?page=' + ${paging.currentPage}}" class="button">글쓰기</a>-->
+                <a th:href="'javascript:write('+${paging.currentPage}+')'" class="button">글쓰기</a>
+            </th:block>
+            <th:block th:if="${session.user == null}">
+                <a href="../login" class="button">로그인</a>
+            </th:block>
+
+            <a href='http://localhost:8085/' class="button">홈</a>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        /*if('${message}'.length !=0) alert('${message}');*/
+        function write(currentPage) {
+            let yn
+            if('${session.user }'==''){  /* 로그인여부 검사: user는 session 에 저장된 애트리뷰트 */
+                yn=confirm('글쓰기는 로그인이 필요합니다. 로그인 하시겠습니까?')
+                if(yn) location.href='../login?back=w'  // 로그인 후 글쓰기 url로 redirect 하기 위한 파라미터
+            }else{
+                location.href='write?page='+currentPage
+            }
+        }
+    </script>
+    <div style="width:700px;margin: auto;padding: 10px;text-align: center;">
+        전체 글 개수 : <span th:text="${paging.totalCount}"></span> <br>
+        <hr>
+        <a class="pagenum" th:href="@{'?page=1'}">&lt;&lt;</a>
+        <a class="pagenum" th:href="@{'list'(page=(${paging.startPage - 1}))}"
+           th:style="${paging.startPage == 1} ? 'display:none;' : ''">&lt;</a>
+        <th:block th:each="i : ${#numbers.sequence(paging.startPage, paging.endPage)}">
+            <a class="pagenum" th:href="@{'list'(page=${i})}" th:text="${i}"></a>
+        </th:block>
+        <a class="pagenum" th:href="@{'list'(page=(${paging.endPage + 1} ))}"
+           th:style="${paging.endPage == paging.totalPage} ? 'display:none;' : ''">&gt;</a>
+        <a class="pagenum" th:href="@{'list'(page=(${paging.totalPage}))}">&gt;&gt;</a>
+    </div>
+</main>
+<script type="text/javascript">
+    const pnums = document.querySelectorAll('.ieach');
+    pnums.forEach(function(item){   /* forEach로 숫자 a태그를 하나씩 item 에 저장 */
+        console.log(item);
+        /* item 번호가 현재 페이지 이면 글꼴 스타일을 다르게함. */
+        if(item.innerHTML=='${paging.currentPage}') {     /* a태그의 숫자와 현재페이지가 같은지 검사 */
+            item.style.color = 'black';
+            item.style.fontWeight = 'bold';
+        }else{
+            item.style.color = '#37966f';
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{/layout/basic.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row mt-3" style="width: 600px; margin: 0px 300px;">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    회원 정보 수정 <span style="color: red;"> ※ 비밀번호,e-mail 만 변경 가능합니다.</span>
+                </div>
+                <div class="card-body">
+                    <form action="update" method="post">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text col-2">이름</span>
+                            <input name="name" class="form-control" th:value="${session.user.name}"readonly>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text col-2">ID</span>
+                            <input name="id" class="form-control" th:value="${session.user.id}" readonly>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text col-2">비밀번호</span>
+                            <input name="password" class="form-control" th:value="${session.user.password}">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text col-2">e-mail</span>
+                            <input name="email" class="form-control" th:value="${session.user.email}">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text col-2">나이</span>
+                            <input name="age" class="form-control" th:value="${session.user.age}" readonly>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text col-2">가입일</span>
+                            <input name="reg_date" class="form-control" th:value="${session.user.reg_date}" disabled>
+                        </div>
+                        <div class="my-4" style="text-align: center;">
+                            <a class="text-decoration-none">
+                                <button type="submit" class="btn btn-secondary">저장</button>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

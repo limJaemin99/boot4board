@@ -24,10 +24,10 @@ public class PageResponseDTO {
                                         //View 에 전달도 한번에 가능하다.
 
     public static PageResponseDTO of(PageRequestDTO dto , int totalCount , int pageSize){
-        int totalPage = (int) Math.ceil((double) totalCount/pageSize);  //ceil 은 올림입니다.
+        int totalPage = (int) Math.ceil((double) totalCount/dto.getSize());  //ceil 은 올림입니다.
         //현재 페이지에 대한 페이지 목록 시작값 계산 - ex) 현재 페이지가 1~10 일 경우 startPage = 1 , 11~20 일 경우 startPage = 11
         int startPage = (dto.getPage()-1)/pageSize*pageSize+1;  //페이지 번호 리스트 pageSize 만큼. pageSize 가 10 일 경우
-        int endPage = Math.min(startPage+pageSize-1, totalPage);
+        int endPage = Math.min(startPage+4, totalPage);
 
         //계산된 값으로 객체 생성하여 리턴
         return PageResponseDTO.builder()
