@@ -12,6 +12,24 @@
 <!-- ┃ #strings(String 클래스) , #numbers , #dates(Date 클래스) -->
 <!-- ┃ #temporals : LocalDate , LocalDateTime 클래스를 다룬다. -->
 <!-- ┃ #dates 와 #temporals 는 함께 사용할 수 없다. -->
+<!--modal -->
+<div class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">My Board</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="message"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!--  <button type="button" class="btn btn-primary">Save changes</button>-->
+            </div>
+        </div>
+    </div>
+</div>
 <div layout:fragment="content">
     <div class="row mt-3">
         <div class="col">
@@ -20,10 +38,15 @@
                     Welcome! Community - Read [[${dto.idx}]] 번
                 </div>
                 <div class="card-body">
-                    <form action="" method="post">
+                    <form action="delete" method="post">
                         <div class="input-group mb-3">
                             <span class="input-group-text col-2">제목</span>
                             <input name="title" class="form-control" th:value="${dto.title}" readonly>
+                            <input type="hidden" name="idx" th:value="${dto.idx}">
+                            <input type="hidden" name="link" th:value="${pageRequestDTO.link}">
+                            <span th:if="${session.user != null and #strings.equals(session.user.id,dto.writer)}">
+                                <button type="submit" class="btn btn-secondary">삭제</button>
+                            </span>
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text col-2">내용</span>
@@ -59,4 +82,16 @@
         </div>
     </div>
 </div>
+
+
+
+<script layout:fragment="script" th:inline="javascript">
+    //수정 완료 메시지
+    const result = [[${message}]]
+    const modal = new bootstrap.Modal(document.querySelector(".modal")) //부트 스트랩의 모달 기능을 제공하는 객체
+    if (result) {    //result model 값이 전달된 것이 있을 경우 true
+        document.querySelector('#message').innerHTML = result
+        modal.show();
+    }
+</script>
 </html>

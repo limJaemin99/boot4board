@@ -22,6 +22,10 @@ public class CommunityController {
 
     private final CommunityService service;
 
+    //★ 참고 ★
+    //@GetMapping("/read" , "/update") ◀ 이렇게 사용할 수도 있음
+
+
 //    @GetMapping("/list")
 //    public void pagelist(@RequestParam(defaultValue = "1") int page , Model model){
 //        model.addAttribute("list",service.pagelist(page).get("list"));
@@ -81,14 +85,21 @@ public class CommunityController {
         return "redirect:/community/read";
     }
 
-    @PostMapping("delete")
-    public String delete(int page , long idx , RedirectAttributes redirectAttributes){
+//    @PostMapping("delete")
+//    public String delete(int page , long idx , RedirectAttributes redirectAttributes){
+//        service.delete(idx);
+//
+//        redirectAttributes.addAttribute("page",page);
+//        redirectAttributes.addFlashAttribute("message","글 삭제가 완료되었습니다.");
+//
+//        return "redirect:/community/list";
+//    }
+    @PostMapping("delete")  //pageRequestDTO 를 파라미터로 받아서 수정 후에도 검색이 유지되도록 한다.
+    public String delete(PageRequestDTO pageRequestDTO , Long idx , RedirectAttributes redirectAttributes){
         service.delete(idx);
+        redirectAttributes.addFlashAttribute("result",idx+"번 게시글이 삭제되었습니다.");
 
-        redirectAttributes.addAttribute("page",page);
-        redirectAttributes.addFlashAttribute("message","글 삭제가 완료되었습니다.");
-
-        return "redirect:/community/list";
+        return "redirect:/community/list?"+pageRequestDTO.getLink();
     }
 
     @PostMapping("/comments")

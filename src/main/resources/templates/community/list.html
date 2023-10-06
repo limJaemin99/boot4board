@@ -133,59 +133,73 @@
             </span>
                 <span class="btn"> | 현재 페이지 번호 : [[${page}]] | </span>
             </div>
-            <!--검색기능을 포함한 페이징을 하기 위해 th:href 를 직접 지정하지 않고 자바스크립트 이벤트리스너로 작성-->
-            <script layout:fragment="script" th:inline="javascript">
-                document.querySelector("#pagination").addEventListener('click', e => {
-                    //#pagination 안에 있는 a 태그에 클릭 이벤트 처리하도록 합니다.
-                    e.preventDefault()              //a 태그 등 pagination 안에 있는 기본 클릭 동작을 중지
-                    e.stopPropagation()             //클릭 이벤트는 자식 또는 부모요소에 전달되는데 그것을 중지
-                    const target = e.target
-                    if (target.tagName !== 'A') {
-                        return
-                    }          //클릭한 요소가 a 태그가 아니면 종료
 
-                    const num = target.getAttribute("data-num")     //a 태그의 data-num 속성값 가져오기. data-num 은 화면에 출력하지 않고 데이터를 저장
-                    console.log(num)
-                    //검색을 위한 추가 코드
-                    const formObj = document.querySelector("form")
-                    formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
-                    formObj.submit()        //form 파라미터 값들 서버로 전송
-                })
-                //초기화 버튼
-                document.querySelector(".clearBtn").addEventListener('click', e => {
-                    //location.href='/community/list'
-                    self.location = '/community/list'
-                })
+            <!--modal -->
+            <div class="modal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">My Board</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="message"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <!--  <button type="button" class="btn btn-primary">Save changes</button>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                document.querySelector("#write").addEventListener('click',write)
-
-                function write() {
-                    let startPage = '[[${paging.startPage }]]';
-
-                    location.href = 'write?page=' + startPage
-                }
-
-                const message = [[${alert}]];
-                //객체(문자열 포함) 검사합니다. 양쪽에 '' 안에 넣으면 값이 없을떄 'null'
-
-                if (message !== null)
-                    alert(message)
-                /* 기존 css : item 번호가 현재 페이지 이면 글꼴 스타일을 다르게함. */
-                /*
-                const pnums = document.querySelectorAll('.ieach');
-                    pnums.forEach(function(item){
-                        console.log(item);
-                        if(item.innerHTML=='${paging.currentPage}') {
-                            item.style.color = 'black';
-                            item.style.fontWeight = 'bold';
-                        }else{
-                            item.style.color = '#37966f';
-                        }
-                    });
-                */
-            </script>
         </div>
     </main>
 </div>
+<!--검색기능을 포함한 페이징을 하기 위해 th:href 를 직접 지정하지 않고 자바스크립트 이벤트리스너로 작성-->
+<script layout:fragment="script" th:inline="javascript">
+    document.querySelector("#pagination").addEventListener('click', e => {
+        //#pagination 안에 있는 a 태그에 클릭 이벤트 처리하도록 합니다.
+        e.preventDefault()              //a 태그 등 pagination 안에 있는 기본 클릭 동작을 중지
+        e.stopPropagation()             //클릭 이벤트는 자식 또는 부모요소에 전달되는데 그것을 중지
+        const target = e.target
+        if (target.tagName !== 'A') {
+            return
+        }          //클릭한 요소가 a 태그가 아니면 종료
+
+        const num = target.getAttribute("data-num")     //a 태그의 data-num 속성값 가져오기. data-num 은 화면에 출력하지 않고 데이터를 저장
+        console.log(num)
+        //검색을 위한 추가 코드
+        const formObj = document.querySelector("form")
+        formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+        formObj.submit()        //form 파라미터 값들 서버로 전송
+    })
+    //초기화 버튼
+    document.querySelector(".clearBtn").addEventListener('click', e => {
+        //location.href='/community/list'
+        self.location = '/community/list'
+    })
+
+    document.querySelector("#write").addEventListener('click',write)
+
+    function write() {
+        let startPage = '[[${paging.startPage }]]';
+
+        location.href = 'write?page=' + startPage
+    }
+
+    const message = [[${alert}]];
+    //객체(문자열 포함) 검사합니다. 양쪽에 '' 안에 넣으면 값이 없을떄 'null'
+
+    if (message !== null)
+        alert(message)
+    //수정 완료 메시지
+    const result = [[${result}]]
+    const modal = new bootstrap.Modal(document.querySelector(".modal")) //부트 스트랩의 모달 기능을 제공하는 객체
+    if (result) {    //result model 값이 전달된 것이 있을 경우 true
+        document.querySelector('#message').innerHTML = result
+        modal.show();
+    }
+</script>
 </body>
 </html>

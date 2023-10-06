@@ -18,9 +18,9 @@
             </div>
             <div class="card-body">
                 <form name="frm1" action="update" method="post">
-                    <input type="hidden" name="idx" th:value="${vo.idx }">
                     <input type="hidden" name="page" th:value="${page}">
-                    <input type="hidden" name="ip" th:value="${remoteAddr }">
+                    <input type="hidden" name="idx" th:value="${vo.idx }">
+                    <input type="hidden" th:value="${#httpServletRequest.remoteAddr}" name="ip">
                     <div class="input-group mb-3">
                         <span class="input-group-text col-2">제목</span>
                         <span th:if="${vo.title.contains('[수정]')}">
